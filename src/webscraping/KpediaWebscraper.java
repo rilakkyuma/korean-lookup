@@ -65,10 +65,19 @@ public class KpediaWebscraper {
 		    		found = true;
 		    		
 		    	} else {
-		    		
-		    		//the first result should compare as being exactly same as the parameter
-		    		//if it is not, break the loop immediately
-		    		break;
+		    	
+		    		if (WiktionaryWebscraper.getInstance().getMode() == Mode.OTHER ||
+		    				WiktionaryWebscraper.getInstance().getMode() == Mode.VERB) {
+		    			
+		    			//the first result should compare as being exactly same as the parameter if it is not an adjective
+			    		//if it is not, break the loop immediately
+		    			break;
+		    			
+		    		} else {
+		    			//due to the behavior of Kpedia.jp's table of randomizing the position of results
+		    			//that are adjectives, we go through the entire table until we find a match,
+		    			//so we do not break the loop
+		    		}
 		    		
 		    	}
 		    	
