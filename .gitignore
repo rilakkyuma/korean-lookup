@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # Everything that's in the bin folder
-bin/
++bin/
 
 # Package Files #
 *.jar
