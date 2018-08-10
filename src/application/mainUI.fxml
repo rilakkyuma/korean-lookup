@@ -24,7 +24,7 @@
             <RadioButton fx:id="radio2" layoutX="139.0" layoutY="94.0" mnemonicParsing="false" onMousePressed="#deselect2" onMouseReleased="#click2" selected="false" text="ヘヨチェ（略体上称）" />
             <RadioButton fx:id="radio3" layoutX="310.0" layoutY="94.0" mnemonicParsing="false" onMousePressed="#deselect3" onMouseReleased="#click3" selected="false" text="ヘラチェ（下称）" />
             <RadioButton fx:id="radio4" layoutX="456.0" layoutY="94.0" mnemonicParsing="false" onMousePressed="#deselect4" onMouseReleased="#click4" selected="false" text="ハシブシオチェ（上称）" />
-            <Label layoutX="12.0" layoutY="71.0" prefHeight="17.0" prefWidth="724.0" text="丁寧さを選択 （丁寧さ順）（単語が表示されない場合はヘラチェを選んで下さい。）" />
+            <Label layoutX="12.0" layoutY="71.0" prefHeight="17.0" prefWidth="724.0" text="丁寧さを選択 （丁寧さ順）" />
             <AnchorPane fx:id="ADJsubBox" layoutX="9.0" layoutY="121.0" prefHeight="345.0" prefWidth="735.0">
                <children>
                   <Line disable="true" endX="245.0" endY="101.0" startY="101.0" />
