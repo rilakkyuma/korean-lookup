@@ -5,4 +5,4 @@ A GUI that lets the user type in Korean and search for definitions and verb/adje
 The search box will automatically replace the Roman characters typed once the ```SPACE``` bar is pressed, so hit ```SPACE``` for EACH Hangeul block you want to compose, as it will only convert the last valid block. The spelling is somewhat strict, as ᄀ ALWAYS is equivalent to 'g', not 'k', even at the end of a word. Similarly with ᄅ ('l'), ᄑ ('p'), ᄐ ('t'), etc...
 
 ## download
-A pre-built runnable .JAR file can be downloaded from [here](https://www.dropbox.com/s/u6q8zwh7ojuryxv/korean-lookup.jar?dl=0). Simply download the .JAR and run it.
+A pre-built runnable .JAR file can be downloaded from [here](https://www.dropbox.com/s/18oh6thv8x7mbxr/korean-lookup.jar?dl=0). Simply download the .JAR and run it.
