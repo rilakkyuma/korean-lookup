@@ -14,8 +14,8 @@ public class Data {
 	
 	public static HashMap<String, Character> roma_han = new HashMap<>();
 	
-	private static int UNICODE_MIN = 44032;
-	private static int UNICODE_MAX = 55203;
+	private static final int UNICODE_MIN = 44032;
+	private static final int UNICODE_MAX = 55203;
 	
 	/**
 	 * initializes the main roma_han String->Character HashMap with the romanized Korean
