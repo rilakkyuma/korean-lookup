@@ -48,13 +48,20 @@ public class KpediaWebscraper {
 			//connect to Kpedia.jp
 			doc = Jsoup.connect("http://www.kpedia.jp/s/1/" + word).get();
 		    
+			//assigns elements to the table on the page (if exists) that will have a 
+			//maximum size of 2x50
 		    Elements elements = doc.select("table[class=school-course]");
 		    
+		    //for every row on the table...
 		    for (int i = 0; i < elements.get(0).select("td").size(); i += 2) {
 		    	
+		    	//check if the Korean word (0 and even i, for left column of table) exactly matches the word parameter
+		    	//increment by 2 because we want to strictly traverse the left column of the table
 		    	if (elements.get(0).select("td").eq(i).get(0).text().substring(0, word.length() + 1).equals(word + "（")) {
 		    		
+		    		//if it does, add it to the definition String
 		    		definition += elements.get(0).select("td").eq(i + 1).get(0).text() + " ";
+		    		//and set found to true
 		    		found = true;
 		    		
 		    	} else {
@@ -65,6 +72,7 @@ public class KpediaWebscraper {
 		    		
 		    	}
 		    	
+		    	//replace all commas in the definition String to make it easier to format into an Array
 		    	definition = definition.replaceAll("、", " ");
 		    	
 		    }
