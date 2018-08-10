@@ -1,10 +1,8 @@
 package webscraping;
 
-import java.util.List;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 /**
  * Singleton class that scrapes the definition of the inputted word from Kpedia.net
@@ -14,17 +12,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class KpediaWebscraper {
 
 	private static final KpediaWebscraper instance;
-	private static final WebClient client = new WebClient();
-	
-	private static String data = "";
 	private static String definition = "";
-	private static List<HtmlElement> items;
 	private boolean found = false;
+	private static Document doc;
 	
 	static {
 		instance = new KpediaWebscraper();
-		client.getOptions().setCssEnabled(false);
-		client.getOptions().setJavaScriptEnabled(false);
 	}
 	
 	private KpediaWebscraper() {
@@ -37,46 +30,83 @@ public class KpediaWebscraper {
 	
 	//resets all fields that have changed
 	private void reset() {
-		data = "";
 		definition = "";
 		found = false;
 	}
+
+	/**
+	 * Retrieves relevant dictionary entries for parameter word at the Kpedia.jp search page. Does this by
+	 * reading HTML of search results page and extracting necessary data according to specific formatting
+	 * rules.
+	 * @param word to search for
+	 * @param url to search at
+	 */
+	private void searchAndStoreDefinitions(String word) {
+		
+		try {               
+			
+			//connect to Kpedia.jp
+			doc = Jsoup.connect("http://www.kpedia.jp/s/1/" + word).get();
+		    
+		    Elements elements = doc.select("table[class=school-course]");
+		    
+		    for (int i = 0; i < elements.get(0).select("td").size(); i += 2) {
+		    	
+		    	if (elements.get(0).select("td").eq(i).get(0).text().substring(0, word.length() + 1).equals(word + "（")) {
+		    		
+		    		definition += elements.get(0).select("td").eq(i + 1).get(0).text() + " ";
+		    		found = true;
+		    		
+		    	} else {
+		    		
+		    		//the first result should compare as being exactly same as the parameter
+		    		//if it is not, break the loop immediately
+		    		break;
+		    		
+		    	}
+		    	
+		    	definition = definition.replaceAll("、", " ");
+		    	
+		    }
+		
+		} catch (Exception e) {
+			
+			//if an error of the like comes up, then reset found to false due to possibility of error in the middle of search (where found was set to true)
+			found = false;
+			
+		}
+		
+	}
 	
+	/**
+	 * Calls on searchAndStoreDefinitions() using the standard Kpedia search URL to get the most
+	 * relevant definition results for the parameter word.
+	 * @param word to search definitions for
+	 * @return String containing the complete definition label
+	 */
 	public String getDefinition(String word) {
 		
 		reset();
 		
-		try {
-			
-			HtmlPage page = client.getPage("https://www.google.com/search?num=1000&q=" + word + "%20意味%20Kpedia");
-			
-			items = page.getByXPath("//div[@class='g']");
-			
-			if (items.isEmpty()) {
-				System.out.println("nothing");
-			} else {
-				
-				for (HtmlElement item : items) {
-					
-					data = item.asText().replaceAll("\n", "");
-					
-					if (data.indexOf(word) == 0 && data.charAt(word.length()) == 'の' && data.contains("Kpedia")) {
-						found = true;
-						definition = definition + data.substring(data.indexOf("：") + 1, data.indexOf(" _")) + "、";
-					}	
-					
-				}
+		searchAndStoreDefinitions(word);
 
-				definition = (definition.replaceAll(" ", ""));
-				definition = definition.substring(0, definition.length() - 1);
-				
-				if (found) {
-					definition = "意味：" + definition;
-				}
-				
+		if (found) { //if at least one definition was found
+			
+			//store the definitions in an array
+			String[] definitionsArray = definition.split(" ");
+			
+			//initialize the definition String with "意味："
+			definition = "意味：";
+			
+			//fill up the definition String with definitionSet's entries
+			for (String s : definitionsArray) {
+				definition += s + "、";
 			}
 			
-		} catch (Exception e) {
+			//chop off the ending comma
+			definition = definition.substring(0, definition.length() - 1);
+			
+		} else { //if found was never changed to true, then definition message becomes "意味は見つかりませんでした。"
 			definition = "意味は見つかりませんでした。";
 		}
 		
