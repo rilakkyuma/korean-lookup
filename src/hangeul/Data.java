@@ -47,7 +47,7 @@ public class Data {
 	private static String[] combos = new String[11172];
 	
 	//consonant component of Korean character
-	private static String[] consonant = new String[] {
+	private final static String[] consonant = new String[] {
 			"g", //ᄀ
 			"gg", //ᄁ
 			"n", //ᄂ
@@ -70,7 +70,7 @@ public class Data {
 	};
 	
 	//vowel component of Korean character
-	private static String[] vowel = new String[] {
+	private final static String[] vowel = new String[] {
 			"a", //아
 			"ae", //애
 			"ya", //야
@@ -95,7 +95,7 @@ public class Data {
 	};
 	
 	//ending component of Korean character
-	private static String[] fin = new String[] {
+	private final static String[] fin = new String[] {
 			"",
 			"g",
 			"gg",
