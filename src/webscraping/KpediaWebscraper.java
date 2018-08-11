@@ -4,29 +4,34 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Singleton class that scrapes the definition of the inputted word from Kpedia.net
  * @authors tim, alvin
- *
+ * 
  */
 public class KpediaWebscraper {
 
 	private static final KpediaWebscraper instance;
 	private static StringBuilder definition;
-	private static String word;
 	private static boolean found;
 	private static Document doc;
-	private static Map<String, String> memo;
+	private static Map<String, String> definitions_memo;
+	
+	private String word = "";
 
 	static {
 		instance = new KpediaWebscraper();
 		definition = new StringBuilder();
-		word = "";
 		found = false;
-		memo = new HashMap<>();
+		definitions_memo = new HashMap<>();
 	}
 
 	private KpediaWebscraper() {
@@ -53,6 +58,35 @@ public class KpediaWebscraper {
 			index += to.length();
 			index = builder.indexOf(from, index);
 		}
+	}
+	
+	//export the serialization of the definition memo HashMap
+	public void exportSerialization() {
+		try {
+               FileOutputStream filestream = new FileOutputStream("src/webscraping/definitions.ser");
+               ObjectOutputStream objectstream = new ObjectOutputStream(filestream);
+               objectstream.writeObject(definitions_memo);
+               objectstream.close();
+               filestream.close();
+         } catch (IOException e) {
+        	 e.printStackTrace();
+         }
+	}
+	
+	//read in the serialization of the definition memo HashMap, then de-serialize it
+	@SuppressWarnings("unchecked")
+	public void readInSerialization() {
+		try {
+	        FileInputStream filestream = new FileInputStream("src/webscraping/definitions.ser");
+	        ObjectInputStream objectstream = new ObjectInputStream(filestream);
+	        
+	       definitions_memo = (Map<String, String>) objectstream.readObject();
+	        
+	        objectstream.close();
+	        filestream.close();
+	    } catch (IOException | ClassNotFoundException e) {
+	    	e.printStackTrace();
+	    }
 	}
 
 	/**
@@ -82,7 +116,7 @@ public class KpediaWebscraper {
 					//if it does, add it to the definition String
 					definition.append(elements.get(0).select("td").eq(i + 1).get(0).text() + " ");
 					//add it to the dictionary
-					memo.put(word, definition.toString());
+					definitions_memo.put(word, definition.toString());
 					//and set found to true
 					found = true;
 
@@ -97,6 +131,7 @@ public class KpediaWebscraper {
 
 			//if an error of the like comes up, then reset found to false due to possibility of error in the middle of search (where found was set to true)
 			found = false;
+			e.printStackTrace();
 
 		}
 
@@ -110,12 +145,29 @@ public class KpediaWebscraper {
 	 */
 	public String getDefinition(String word) {
 
-		// last found word
-		if (this.word.equals(word) && found == true)
+		// if the search word is the last found word
+		// a.k.a. consecutive searches of the same word
+		if (this.word.equals(word) && found == true) {
 			return definition.toString();
-		if (memo.containsKey(word))
-			return memo.get(word);
+		}
+		
+		//if the word has been searched before and memoized, format it
+		if (definitions_memo.containsKey(word)) {
+			//clear the current definition
+			definition.setLength(0);
+			//append 意味；def1 def2 def3 def4 ... defn
+			definition.append("意味：" + definitions_memo.get(word));
+			//replace every space with 、
+			//making 意味；def1、def2、def3、def4、... defn
+			replaceAll(definition, " ", "、");
+			//chop off the ending comma
+			definition.setLength(definition.length() - 1);
+			//return the definition String
+			return definition.toString();
+		}
 
+		//if this is the first time searching a word, reset the necessary fields
+		//and prepare for a new search
 		reset();
 
 		searchAndStoreDefinitions(word);
