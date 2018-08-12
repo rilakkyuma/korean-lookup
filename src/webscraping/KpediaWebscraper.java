@@ -26,6 +26,10 @@ public class KpediaWebscraper {
 	private static Map<String, String> definitions_memo;
 	
 	private String word = "";
+	
+	private KpediaWebscraper() {
+		//no-arg constructor
+	}
 
 	static {
 		instance = new KpediaWebscraper();
@@ -33,13 +37,32 @@ public class KpediaWebscraper {
 		found = false;
 		definitions_memo = new HashMap<>();
 	}
-
-	private KpediaWebscraper() {
-		//no-arg constructor
-	}
-
+	
+	//getters
+	
+	/**
+	 * Returns the single instance of this class
+	 * @return KpediaWebscraper instance
+	 */
 	public static KpediaWebscraper getInstance() {
 		return instance;
+	}
+	
+	/**
+	 * Returns the memoized conjugations map
+	 * @return Map containing currently stored memozied map
+	 */
+	public Map<String, String> getDefinitionsMemo() {
+		return definitions_memo;
+	}
+	
+	/**
+	 * Checks if the parameter word has been memoized before, if it is in the memoized HashMap
+	 * @param word to check existence of
+	 * @return true if the word has been memoized, false if otherwise
+	 */
+	public boolean hasDefinition(String word) {
+		return definitions_memo.containsKey(word);
 	}
 
 	//resets all fields that have changed
@@ -48,45 +71,6 @@ public class KpediaWebscraper {
 		definition.setLength(0);
 		word = "";
 		found = false;
-	}
-
-	// Auxiliary method to replace every "from" to "to" in specified StringBuilder
-	private static void replaceAll(StringBuilder builder, String from, String to) {
-		int index = builder.indexOf(from);
-		while (index != -1) {
-			builder.replace(index, index + from.length(), to);
-			index += to.length();
-			index = builder.indexOf(from, index);
-		}
-	}
-	
-	//export the serialization of the definition memo HashMap
-	public void exportSerialization() {
-		try {
-               FileOutputStream filestream = new FileOutputStream("src/webscraping/definitions.ser");
-               ObjectOutputStream objectstream = new ObjectOutputStream(filestream);
-               objectstream.writeObject(definitions_memo);
-               objectstream.close();
-               filestream.close();
-         } catch (IOException e) {
-        	 e.printStackTrace();
-         }
-	}
-	
-	//read in the serialization of the definition memo HashMap, then de-serialize it
-	@SuppressWarnings("unchecked")
-	public void readInSerialization() {
-		try {
-	        FileInputStream filestream = new FileInputStream("src/webscraping/definitions.ser");
-	        ObjectInputStream objectstream = new ObjectInputStream(filestream);
-	        
-	       definitions_memo = (Map<String, String>) objectstream.readObject();
-	        
-	        objectstream.close();
-	        filestream.close();
-	    } catch (IOException | ClassNotFoundException e) {
-	    	e.printStackTrace();
-	    }
 	}
 
 	/**
@@ -129,9 +113,11 @@ public class KpediaWebscraper {
 
 		} catch (Exception e) {
 
-			//if an error of the like comes up, then reset found to false due to possibility of error in the middle of search (where found was set to true)
+			//if the program ends up here it means that an error happened during retrieving definitions
+			//chances are very high that there was no table of definitions found, meaning the parameter word
+			//doesn't have an entry on Kpedia.jp
 			found = false;
-			e.printStackTrace();
+			System.out.println("\tcould not find an entry for " + word);
 
 		}
 
@@ -139,7 +125,8 @@ public class KpediaWebscraper {
 
 	/**
 	 * Calls on searchAndStoreDefinitions() using the standard Kpedia search URL to get the most
-	 * relevant definition results for the parameter word.
+	 * relevant definition results for the parameter word. If this method finds at least one valid
+	 * definition, it will be memoized.
 	 * @param word to search definitions for
 	 * @return String containing the complete definition label
 	 */
@@ -199,6 +186,46 @@ public class KpediaWebscraper {
 		return definition.toString();
 
 	}
+	
+
+	// Auxiliary method to replace every "from" to "to" in specified StringBuilder
+	private static void replaceAll(StringBuilder builder, String from, String to) {
+		int index = builder.indexOf(from);
+		while (index != -1) {
+			builder.replace(index, index + from.length(), to);
+			index += to.length();
+			index = builder.indexOf(from, index);
+		}
+	}
+	
+	//export the serialization of the definition memo HashMap
+		public void exportSerialization() {
+			try {
+	               FileOutputStream filestream = new FileOutputStream("src/webscraping/definitions.ser");
+	               ObjectOutputStream objectstream = new ObjectOutputStream(filestream);
+	               objectstream.writeObject(definitions_memo);
+	               objectstream.close();
+	               filestream.close();
+	         } catch (IOException e) {
+	        	 e.printStackTrace();
+	         }
+		}
+		
+		//read in the serialization of the definition memo HashMap, then de-serialize it
+		@SuppressWarnings("unchecked")
+		public void readInSerialization() {
+			try {
+		        FileInputStream filestream = new FileInputStream("src/webscraping/definitions.ser");
+		        ObjectInputStream objectstream = new ObjectInputStream(filestream);
+		        
+		       definitions_memo = (Map<String, String>) objectstream.readObject();
+		        
+		        objectstream.close();
+		        filestream.close();
+		    } catch (IOException | ClassNotFoundException e) {
+		    	System.out.println("definitions.ser file not found");
+		    }
+		}
 
 }
 
