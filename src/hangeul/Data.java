@@ -1,6 +1,7 @@
 package hangeul;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This data class contains data for romanized Korean characters and is able to retrieve
@@ -12,10 +13,10 @@ import java.util.HashMap;
  */
 public class Data {
 	
-	public static HashMap<String, Character> roma_han = new HashMap<>();
+	public static Map<String, Character> roma_han = new HashMap<>();
 	
-	private static final int UNICODE_MIN = 44032;
-	private static final int UNICODE_MAX = 55203;
+	public static final int UNICODE_MIN = 44032;
+	public static final int UNICODE_MAX = 55203;
 	
 	/**
 	 * initializes the main roma_han String->Character HashMap with the romanized Korean
