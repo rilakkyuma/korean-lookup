@@ -37,7 +37,7 @@ public class FXMLController {
 	private Label status;
 	
 	@FXML
-	private AnchorPane conjugationBox, ADJsubBox, VERBsubBox;
+	private AnchorPane conjugationBox, ADJsubBox, VERBsubBox, conjugationTableNotFound;
 	
 	@FXML //labels where conjugated Korean adjectives will go
 	private Label ADJ1, ADJ2, ADJ3, ADJ4, ADJ5, ADJ6, ADJ7, ADJ8, ADJ9, ADJ10, ADJ11, ADJ12, ADJ13;
@@ -113,28 +113,61 @@ public class FXMLController {
 		
 		WiktionaryWebscraper.getInstance().setMode(input);
 		
-		
 		if (WiktionaryWebscraper.getInstance().getMode() == Mode.ADJECTIVE) {
 			
 			status.setText(KpediaWebscraper.getInstance().getDefinition(input));
 			conjugations = WiktionaryWebscraper.getInstance().getConjugations(input);
 			
-			setConjugations();
+			//if there are valid definitions for the input...
+			if (WiktionaryWebscraper.getInstance().hasConjugations(input)) {
+				
+				//show the conjugations
+				setConjugations();
+				setRadiosDisabled(false);
+				conjugationTableNotFound.setVisible(false);
+				VERBsubBox.setVisible(false);
+				ADJsubBox.setVisible(true);
+				conjugationBox.setVisible(true);
+				
+			} else {
+				
+				//otherwise, show only the "Conjugations not found" box
+				
+				conjugationBox.setVisible(false);
+				setRadiosDisabled(true);
+				ADJsubBox.setVisible(false);
+				VERBsubBox.setVisible(false);
+				conjugationTableNotFound.setVisible(true);
 			
-			setRadiosDisabled(false);
-			ADJsubBox.setVisible(true);
-			VERBsubBox.setVisible(false);
+			}
 			
 		} else if (WiktionaryWebscraper.getInstance().getMode() == Mode.VERB) {
 			
 			status.setText(KpediaWebscraper.getInstance().getDefinition(input));
 			conjugations = WiktionaryWebscraper.getInstance().getConjugations(input);
 			
-			setConjugations();
-
-			setRadiosDisabled(false);
-			ADJsubBox.setVisible(false);
-			VERBsubBox.setVisible(true);
+			//if there are valid definitions for the input...
+			if (WiktionaryWebscraper.getInstance().hasConjugations(input)) {
+				
+				//show the conjugations
+				setConjugations();
+				setRadiosDisabled(false);
+				conjugationTableNotFound.setVisible(false);
+				ADJsubBox.setVisible(false);
+				VERBsubBox.setVisible(true);
+				conjugationBox.setVisible(true);
+				
+			} else {
+				
+				//otherwise, show only the "Conjugations not found" box
+			
+				conjugationBox.setVisible(false);
+				setRadiosDisabled(true);
+				ADJsubBox.setVisible(false);
+				VERBsubBox.setVisible(false);
+				conjugationTableNotFound.setVisible(true);
+			
+			}
 			
 		} else {
 			
@@ -143,6 +176,8 @@ public class FXMLController {
 			setRadiosDisabled(true);
 			ADJsubBox.setVisible(false);
 			VERBsubBox.setVisible(false);
+			conjugationBox.setVisible(false);
+			conjugationTableNotFound.setVisible(true);
 			
 		}
 		
