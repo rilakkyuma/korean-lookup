@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import webscraping.KpediaWebscraper;
+import webscraping.WiktionaryWebscraper;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -17,6 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 		
 		KpediaWebscraper.getInstance().readInSerialization();
+		WiktionaryWebscraper.getInstance().readInSerialization();
 
         // just load fxml file and display it in the stage:
 
@@ -29,6 +31,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent t) {
             	KpediaWebscraper.getInstance().exportSerialization();
+            	WiktionaryWebscraper.getInstance().exportSerialization();
             }
         });
         
