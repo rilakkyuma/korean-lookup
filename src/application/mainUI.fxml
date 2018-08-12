@@ -140,6 +140,15 @@
                   <Label fx:id="VERB13" alignment="CENTER" contentDisplay="CENTER" layoutX="498.0" layoutY="75.0" prefHeight="17.0" prefWidth="230.0" textAlignment="CENTER" />
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="conjugationTableNotFound" layoutX="9.0" layoutY="121.0" prefHeight="345.0" prefWidth="735.0" visible="false">
+               <children>
+                  <Line endX="735.0" endY="345.0" startX="735.0" />
+                  <Line startY="345.0" />
+                  <Line endX="735.0" />
+                  <Line endX="735.0" endY="345.0" startY="345.0" />
+                  <Label layoutX="282.0" layoutY="164.0" text="活用表見つかりませんでした。" textAlignment="CENTER" />
+               </children>
+            </AnchorPane>
       </children>
     </AnchorPane>
   </children>
