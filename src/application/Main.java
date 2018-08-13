@@ -1,10 +1,8 @@
 package application;
 	
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import webscraping.KpediaWebscraper;
 import webscraping.WiktionaryWebscraper;
 import javafx.scene.Parent;
@@ -26,14 +24,6 @@ public class Main extends Application {
         loader.setController(new FXMLController());
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        
-        //when the program is closed, export the definitions serialization to a .ser file
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent t) {
-            	KpediaWebscraper.getInstance().exportSerialization();
-            	WiktionaryWebscraper.getInstance().exportSerialization();
-            }
-        });
         
         primaryStage.getIcons().add(new Image("assets/icon.png"));
         primaryStage.setTitle("Korean Lookup");
