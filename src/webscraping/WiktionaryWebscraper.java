@@ -1,10 +1,7 @@
 package webscraping;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +22,7 @@ public class WiktionaryWebscraper {
 	private static final int rowsVerbs = 17; //number of tenses for verbs, which includes command, etc...
 	private static final WiktionaryWebscraper instance;
 	private static Map<String, String[][]> conjugations_memo;
+	private static final String serializationLocation = "/conjugations.ser";
 	
 	private static Mode mode;
 	private static Document doc;
@@ -340,34 +338,21 @@ public class WiktionaryWebscraper {
 		return conjugationtable;
 		
 	}
-	
-	//export the serialization of the conjugation memo HashMap
-		public void exportSerialization() {
-			try {
-		         FileOutputStream filestream = new FileOutputStream("src/webscraping/conjugations.ser");
-		         ObjectOutputStream objectstream = new ObjectOutputStream(filestream);
-		         objectstream.writeObject(conjugations_memo);
-		         objectstream.close();
-		         filestream.close();
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        }
-		}
 			
-		//read in the serialization of the conjugation memo HashMap, then de-serialize it
-		@SuppressWarnings("unchecked")
-		public void readInSerialization() {
-			try {
-			    FileInputStream filestream = new FileInputStream("src/webscraping/conjugations.ser");
-			    ObjectInputStream objectstream = new ObjectInputStream(filestream);
-			        
-			    conjugations_memo = (Map<String, String[][]>) objectstream.readObject();
-			        
-			    objectstream.close();
-			    filestream.close();
-			 } catch (IOException | ClassNotFoundException e) {
-			    System.out.println("conjugations.ser file not found");
-			 }
+	//read in the serialization of the conjugation memo HashMap, then de-serialize it
+	@SuppressWarnings("unchecked")
+	public void readInSerialization() {
+		try {
+			InputStream input = getClass().getResourceAsStream(serializationLocation);
+			ObjectInputStream objectstream = new ObjectInputStream(input);
+			
+			conjugations_memo = (Map<String, String[][]>) objectstream.readObject();
+			
+			input.close();
+			objectstream.close();
+		} catch (Exception e) {
+			System.out.println("conjugations.ser file not found");
 		}
+	}
 
 }

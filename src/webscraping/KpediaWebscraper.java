@@ -4,11 +4,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +22,7 @@ public class KpediaWebscraper {
 	private static boolean found;
 	private static Document doc;
 	private static Map<String, String> definitions_memo;
+	private static final String serializationLocation = "/definitions.ser";
 	
 	private String word = "";
 	
@@ -197,35 +196,22 @@ public class KpediaWebscraper {
 			index = builder.indexOf(from, index);
 		}
 	}
-	
-	//export the serialization of the definition memo HashMap
-		public void exportSerialization() {
-			try {
-	               FileOutputStream filestream = new FileOutputStream("src/webscraping/definitions.ser");
-	               ObjectOutputStream objectstream = new ObjectOutputStream(filestream);
-	               objectstream.writeObject(definitions_memo);
-	               objectstream.close();
-	               filestream.close();
-	         } catch (IOException e) {
-	        	 e.printStackTrace();
-	         }
-		}
 		
-		//read in the serialization of the definition memo HashMap, then de-serialize it
-		@SuppressWarnings("unchecked")
-		public void readInSerialization() {
-			try {
-		        FileInputStream filestream = new FileInputStream("src/webscraping/definitions.ser");
-		        ObjectInputStream objectstream = new ObjectInputStream(filestream);
-		        
-		       definitions_memo = (Map<String, String>) objectstream.readObject();
-		        
-		        objectstream.close();
-		        filestream.close();
-		    } catch (IOException | ClassNotFoundException e) {
-		    	System.out.println("definitions.ser file not found");
-		    }
+	//read in the serialization of the definition memo HashMap, then de-serialize it
+	@SuppressWarnings("unchecked")
+	public void readInSerialization() throws IOException, ClassNotFoundException {
+		try {
+			InputStream input = getClass().getResourceAsStream(serializationLocation);
+			ObjectInputStream objectstream = new ObjectInputStream(input);
+			
+			definitions_memo = (Map<String, String>) objectstream.readObject();
+			
+			input.close();
+			objectstream.close();
+		} catch (Exception e) {
+			System.out.println("definitions.ser file not found");
 		}
+	}
 
 }
 
