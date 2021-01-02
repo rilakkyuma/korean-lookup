@@ -28,6 +28,7 @@ public class Main extends Application {
         primaryStage.getIcons().add(new Image("assets/icon.png"));
         primaryStage.setTitle("Korean Lookup");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 	

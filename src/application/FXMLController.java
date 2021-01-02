@@ -189,7 +189,10 @@ public class FXMLController {
 	 */
 	@FXML
 	private void searchButtonClickListener(MouseEvent event) {
-		
+
+		if (text.equals("")) {
+			return;
+		}
 		inputDefinitionsAndConjugations();
 		
 	}

@@ -16,7 +16,6 @@ import org.jsoup.select.Elements;
  *
  */
 public class WiktionaryWebscraper {
-	
 	private static final int columns = 4;
 	private static final int rowsAdjectives = 13; //number of tenses for adjectives
 	private static final int rowsVerbs = 17; //number of tenses for verbs, which includes command, etc...
