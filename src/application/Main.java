@@ -26,7 +26,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         
         primaryStage.getIcons().add(new Image("assets/icon.png"));
-        primaryStage.setTitle("Korean Lookup");
+        primaryStage.setTitle("韓国語活用辞典");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
